@@ -1,0 +1,8 @@
+Plain Text Document
+===================
+
+This is a simple plain text file for testing conversion to PDF.
+
+Line 1: Hello world
+Line 2: Testing the converter
+Line 3: End of file

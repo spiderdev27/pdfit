@@ -1,0 +1,41 @@
+{
+    "name": "veoksha/pdfit",
+    "description": "Make it PDF — Convert any document (DOCX, images, ZIP, HTML, etc.) to PDF",
+    "keywords": ["laravel", "pdf", "converter", "docx", "document", "images"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Veoksha",
+            "email": "hello@veoksha.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "^10.0|^11.0|^12.0",
+        "symfony/process": "^6.0|^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Veoksha\\LaravelUniversalConverter\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Veoksha\\LaravelUniversalConverter\\ConverterServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Veoksha\\LaravelUniversalConverter\\Scripts::installUv"
+        ],
+        "post-update-cmd": [
+            "Veoksha\\LaravelUniversalConverter\\Scripts::installUv"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable"
+}
