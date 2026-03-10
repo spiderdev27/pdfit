@@ -114,9 +114,22 @@ class Converter
 
         $process = new Process($command);
         $process->setTimeout($this->timeout);
-        $process->setEnv([
+
+        $env = array_merge(is_array(getenv()) ? getenv() : [], [
             'PYTHONUNBUFFERED' => '1',
         ]);
+
+        // macOS: Help WeasyPrint find Homebrew's Pango/Cairo/GLib libraries (libgobject, etc.)
+        if (PHP_OS_FAMILY === 'Darwin') {
+            $brewLibs = array_filter(['/opt/homebrew/lib', '/usr/local/lib'], 'is_dir');
+            if ($brewLibs) {
+                $dyld = $env['DYLD_LIBRARY_PATH'] ?? '';
+                $prepend = implode(':', $brewLibs);
+                $env['DYLD_LIBRARY_PATH'] = $dyld ? $prepend . ':' . $dyld : $prepend;
+            }
+        }
+
+        $process->setEnv($env);
 
         return $process;
     }
