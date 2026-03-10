@@ -2,6 +2,8 @@
 
 > Make it PDF. A Laravel package that converts **any document** to PDF using Python under the hood. Supports DOCX, images, HTML, Markdown, Excel, PowerPoint, EPUB, ZIP, and 20+ other formats—with no microservice, no cloud API, and no manual Python setup.
 
+**Author:** Mohit Anand | **Contact:** admin@veoksha.com
+
 ---
 
 ## What Is This?
@@ -39,6 +41,15 @@ A ZIP is treated as a bundle: the package extracts supported files inside, conve
 | **Laravel** 10+ | |
 | **uv** | Auto-installed by Composer (no action needed) |
 | **LibreOffice** | Required for PPTX, XLSX, ODT, ODS, ODP. See [Installation](#install-libreoffice-optional) |
+
+### Composer Dependencies
+
+- **requires:** `php: ^8.1`, `illuminate/support: ^10.0|^11.0|^12.0`, `symfony/process: ^6.0|^7.0`
+- **requires-dev:** None
+- **suggests:** None
+- **provides:** None
+- **conflicts:** None
+- **replaces:** None
 
 ---
 
@@ -259,6 +270,13 @@ Install LibreOffice and add it to PATH (see [Installation](#2-install-libreoffic
 
 ### Shared hosting
 Most shared hosts restrict `exec()` and installing binaries. Use a VPS, cloud VM, or Docker for reliable conversions.
+
+---
+
+## Author
+
+**Mohit Anand** — Developer of Pdfit  
+Contact: admin@veoksha.com
 
 ---
 
