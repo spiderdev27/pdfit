@@ -2,7 +2,7 @@
 
 > Make it PDF. A Laravel package that converts **any document** to PDF using Python under the hood. Supports DOCX, images, HTML, Markdown, Excel, PowerPoint, EPUB, ZIP, and 20+ other formats—with no microservice, no cloud API, and no manual Python setup.
 
-**Author:** Mohit Anand | **Contact:** admin@veoksha.com
+**Author:** Mohit Anand | **Contact:** admin@veoksha.com | mohitanand540@gmail.com
 
 ---
 
@@ -276,7 +276,7 @@ Most shared hosts restrict `exec()` and installing binaries. Use a VPS, cloud VM
 ## Author
 
 **Mohit Anand** — Developer of Pdfit  
-Contact: admin@veoksha.com
+Contact: admin@veoksha.com | mohitanand540@gmail.com
 
 ---
 
