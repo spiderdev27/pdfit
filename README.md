@@ -40,7 +40,8 @@ A ZIP is treated as a bundle: the package extracts supported files inside, conve
 | **PHP** 8.1+ | |
 | **Laravel** 10+ | |
 | **uv** | Auto-installed by Composer (no action needed) |
-| **LibreOffice** | Required for PPTX, XLSX, ODT, ODS, ODP. See [Installation](#install-libreoffice-optional) |
+| **macOS: Pango/Cairo/GLib** | For HTML, MD, TXT, CSV, RTF: `brew install pango cairo gdk-pixbuf libffi glib` |
+| **LibreOffice** | Required for PPTX, XLSX, ODT, ODS, ODP. See [Installation](#3-install-libreoffice-for-office-formats) |
 
 ### Composer Dependencies
 
@@ -66,7 +67,24 @@ This will:
 - Attempt to install **uv** (a fast Python runner) if not present
 - uv then manages Python and conversion libraries
 
-### 2. Install LibreOffice (for Office formats)
+### 2. macOS: Install WeasyPrint system libraries
+
+Required for HTML, Markdown, TXT, CSV, RTF, EPUB, and ZIP conversion on macOS. WeasyPrint needs Pango, Cairo, and GLib.
+
+```bash
+brew install pango cairo gdk-pixbuf libffi glib
+```
+
+The package sets `DYLD_LIBRARY_PATH` automatically so Python can find these libraries. Without them, you may see:
+
+> Error: cannot load library 'libgobject-2.0-0'
+
+**Linux (Ubuntu/Debian):**
+```bash
+sudo apt install libpango-1.0-0 libpangocairo-1.0-0 libcairo2 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
+```
+
+### 3. Install LibreOffice (for Office formats)
 
 Required only if you need to convert PPTX, XLSX, ODT, ODS, or ODP.
 
@@ -82,10 +100,62 @@ source ~/.zshrc
 sudo apt install libreoffice
 ```
 
-**Docker:**
+**Docker / Cloud:** Use a custom image with LibreOffice and WeasyPrint deps; see [Cloud & Server Deployment](#cloud--server-deployment).
+
+---
+
+## Cloud & Server Deployment
+
+### Architecture: Laravel + Python
+
+- **Package (veoksha/pdfit):** Provides PHP code + `convert.py` script. No Python runtime included.
+- **Your server/container:** Must have `uv` (Python runner) and system libs. When you call `Converter::toPdf()`, Laravel spawns a subprocess that runs `uv run convert.py`, so **Python executes on your server**.
+
+`exec()` and `proc_open` must be enabled in PHP. Shared hosting that blocks these will not work.
+
+### Docker
+
+Example `Dockerfile` for a Laravel app using pdfit:
+
 ```dockerfile
-RUN apt-get update && apt-get install -y libreoffice
+FROM php:8.4-cli-bookworm
+
+# System deps: LibreOffice + WeasyPrint (Pango/Cairo)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    unzip libzip-dev curl libreoffice \
+    libpango-1.0-0 libpangocairo-1.0-0 libcairo2 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info \
+    && docker-php-ext-install zip pcntl \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install uv (Python runner)
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
+    && mv /root/.local/bin/uv /usr/local/bin/
+
+# ... copy app, composer install, etc.
 ```
+
+### Google Cloud Run
+
+Tested and working. Use the Docker approach above. Set `CMD php artisan serve --host=0.0.0.0 --port=${PORT}`. First conversion may take 60–90s while uv fetches Python and deps; later ones are faster.
+
+### Azure
+
+| Environment | Works? | Notes |
+|-------------|--------|-------|
+| **Azure VM** | ✅ | Install uv, LibreOffice, and WeasyPrint deps via apt; add uv to PATH |
+| **Azure Container Apps / AKS** | ✅ | Use a custom Docker image (same pattern as Cloud Run) |
+| **Azure App Service (Linux)** | ✅ | Use a custom Docker image with the required packages |
+| **Restricted hosting** | ❌ | If `exec()` is disabled or you cannot install system packages, pdfit will not run |
+
+### Summary: What Must Be on the Server
+
+| Component | In package? | On server? |
+|-----------|-------------|------------|
+| PHP code, `convert.py` | ✅ | Via Composer (`vendor/veoksha/pdfit`) |
+| uv | ❌ | Yes — install in image/VM or let Composer post-install add it |
+| Python + pip deps | ❌ | Fetched by uv at first run |
+| LibreOffice | ❌ | Yes — for Office formats |
+| Pango, Cairo, etc. | ❌ | Yes — for HTML/MD/TXT/CSV/RTF |
 
 ---
 
@@ -211,10 +281,10 @@ Process exits, PHP gets path to PDF
 
 | Engine | Formats | System dependency |
 |--------|---------|-------------------|
-| **weasyprint** | html, md, txt, csv | None (pure Python) |
+| **weasyprint** | html, md, txt, csv | macOS: Homebrew; Linux: apt — see [Installation](#2-macos-install-weasyprint-system-libraries) |
 | **pypandoc** | docx, rtf, epub | None (bundles Pandoc) |
 | **Pillow** | png, jpg, gif, etc. | None |
-| **LibreOffice** | pptx, xlsx, odt, ods, odp | Must be installed |
+| **LibreOffice** | pptx, xlsx, odt, ods, odp | Must be installed — see [Installation](#3-install-libreoffice-for-office-formats) |
 
 ### Why uv?
 
@@ -261,7 +331,10 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 Ensure `~/.local/bin` is in your PATH.
 
 ### "LibreOffice not found" (for PPTX/XLSX/ODT)
-Install LibreOffice and add it to PATH (see [Installation](#2-install-libreoffice-optional)).
+Install LibreOffice and add it to PATH (see [Installation](#3-install-libreoffice-for-office-formats)).
+
+### "cannot load library 'libgobject-2.0-0'" (macOS)
+Install WeasyPrint's system dependencies: `brew install pango cairo gdk-pixbuf libffi glib`. See [Installation](#2-macos-install-weasyprint-system-libraries).
 
 ### Conversion fails silently
 - Check `php artisan converter:check`
