@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.bat text eol=crlf
+
+# Exclude from dist (composer archive)
+/tests export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore

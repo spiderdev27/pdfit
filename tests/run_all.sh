@@ -32,8 +32,9 @@ test_convert png tests/sample.png
 test_convert jpg tests/sample.jpg
 test_convert rtf tests/sample.rtf
 test_convert zip tests/sample.zip
-test_convert epub tests/gutenberg.epub
-test_convert docx "Accounts Payable Specialist Resume Template_One-Column Resum.docx"
+# epub: add sample.epub or download from gutenberg.org to test
+[ -f tests/sample.epub ] && test_convert epub tests/sample.epub
+test_convert docx tests/sample.docx
 test_convert xlsx tests/sample.xlsx
 test_convert pptx tests/sample.pptx
 test_convert odt tests/sample.odt
