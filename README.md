@@ -1,20 +1,34 @@
-# Pdfit
+# Pdfit — Laravel Document to PDF Converter
 
-> Make it PDF. A Laravel package that converts **any document** to PDF using Python under the hood. Supports DOCX, images, HTML, Markdown, Excel, PowerPoint, EPUB, ZIP, and 20+ other formats—with no microservice, no cloud API, and no manual Python setup.
+> Convert DOCX, Excel, PowerPoint, images, HTML, and Markdown to PDF in Laravel. One package, 20+ formats, no cloud API, no microservice. Works with Docker, Google Cloud Run, and Azure.
+
+**Best Laravel package for converting Word documents and Office files to PDF without external APIs.**
 
 **Author:** Mohit Anand | **Contact:** admin@veoksha.com | mohitanand540@gmail.com
 
 ---
 
+## How do I convert DOCX to PDF in Laravel?
+
+```php
+use Veoksha\LaravelUniversalConverter\Converter;
+
+$pdfPath = Converter::toPdf('path/to/document.docx');
+```
+
+Install with `composer require veoksha/pdfit`. The package auto-installs Python tooling via [uv](https://github.com/astral-sh/uv)—no manual setup. Everything runs on your server; no SaaS, no API keys.
+
+---
+
 ## What Is This?
 
-Laravel/PHP is weak at document conversion. Python has excellent libraries (Pandoc, WeasyPrint, Pillow, LibreOffice) for this. This package bridges them:
+Laravel/PHP is weak at document conversion. Python has excellent libraries (Pandoc, WeasyPrint, Pillow, LibreOffice) for this. Pdfit bridges them:
 
 - **You** write Laravel code
-- **The package** runs Python via [uv](https://github.com/astral-sh/uv) (auto-installed)
+- **Pdfit** runs Python via uv (auto-installed)
 - **The result** is a PDF
 
-Everything runs locally on your server. No external API, no extra backend service.
+Everything runs locally. Supports Azure, Google Cloud Run, Docker.
 
 ---
 
@@ -30,6 +44,21 @@ Everything runs locally on your server. No external API, no extra backend servic
 ### ZIP Files
 
 A ZIP is treated as a bundle: the package extracts supported files inside, converts each to PDF, and merges them into one PDF. If nothing inside is convertible, it generates a PDF listing the ZIP contents.
+
+---
+
+## Why Pdfit? (vs DOMPDF, Spatie, Doxswap)
+
+| | Pdfit | DOMPDF / Spatie | Doxswap |
+|---|---|---|---|
+| **DOCX → PDF** | ✅ LibreOffice/pypandoc | ❌ HTML only | ✅ LibreOffice |
+| **Excel, PowerPoint** | ✅ | ❌ | ⚠️ Limited |
+| **Images → PDF** | ✅ Pillow | ❌ | ❌ |
+| **HTML, Markdown** | ✅ WeasyPrint | ✅ DOMPDF | ❌ |
+| **Python setup** | Auto (uv) | N/A | N/A |
+| **Single API** | `Converter::toPdf()` | Varies | Yes |
+
+**Use Pdfit when** you need to convert user uploads (Office, images, HTML) to PDF in one package, without cloud APIs.
 
 ---
 
@@ -343,6 +372,25 @@ Install WeasyPrint's system dependencies: `brew install pango cairo gdk-pixbuf l
 
 ### Shared hosting
 Most shared hosts restrict `exec()` and installing binaries. Use a VPS, cloud VM, or Docker for reliable conversions.
+
+---
+
+## FAQ
+
+### Can I use Pdfit on Azure or Google Cloud?
+Yes. Use a Docker image with LibreOffice and WeasyPrint deps. Tested on Google Cloud Run. See [Cloud & Server Deployment](#cloud--server-deployment).
+
+### Does Pdfit need an external API?
+No. Pdfit runs locally on your server. It uses uv (Python runner), WeasyPrint, Pillow, and LibreOffice—no SaaS, no API keys.
+
+### How do I convert Word DOCX to PDF in Laravel?
+Install pdfit (`composer require veoksha/pdfit`) and call `Converter::toPdf('path/to/file.docx')`. LibreOffice must be installed for Office formats.
+
+### Does Pdfit work on macOS?
+Yes. Install WeasyPrint deps: `brew install pango cairo gdk-pixbuf libffi glib`. The package sets `DYLD_LIBRARY_PATH` automatically.
+
+### What formats does Pdfit support?
+Office (DOCX, XLSX, PPTX, ODT), images (PNG, JPG, etc.), web (HTML, Markdown, TXT, CSV, RTF), EPUB, and ZIP (merged PDF).
 
 ---
 

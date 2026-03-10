@@ -1,0 +1,23 @@
+# Pdfit — Laravel Document to PDF Converter
+
+> Convert DOCX, Excel, PowerPoint, images, HTML, and Markdown to PDF in Laravel. One package, 20+ formats. No cloud API, no microservice. Works with Docker, Google Cloud Run, Azure.
+
+Pdfit is a Laravel package that converts documents to PDF using Python (WeasyPrint, Pillow, pypandoc, LibreOffice) via uv. Single API: `Converter::toPdf($file)`. Install: `composer require veoksha/pdfit`.
+
+Key facts:
+- Supports DOCX, XLSX, PPTX, ODT, images (PNG, JPG, etc.), HTML, Markdown, TXT, CSV, RTF, EPUB, ZIP
+- No external API; runs locally
+- uv auto-installs Python; no manual Python setup
+- macOS: `brew install pango cairo gdk-pixbuf libffi glib` for WeasyPrint
+- LibreOffice required for Office formats
+
+## Documentation
+
+- [README](https://github.com/spiderdev27/pdfit/blob/main/README.md): Full docs, installation, usage, Cloud deployment
+- [API / Architecture](https://github.com/spiderdev27/pdfit/blob/main/docs/ARCHITECTURE.md): How it works
+- [Packagist](https://packagist.org/packages/veoksha/pdfit): Composer package
+
+## Optional
+
+- [Installation guide](https://github.com/spiderdev27/pdfit/blob/main/docs/INSTALLATION.md)
+- [Supported formats](https://github.com/spiderdev27/pdfit/blob/main/docs/FORMATS.md)

@@ -1,8 +1,31 @@
 {
     "name": "veoksha/pdfit",
-    "version": "1.0.2",
-    "description": "Make it PDF — Convert any document (DOCX, images, ZIP, HTML, etc.) to PDF",
-    "keywords": ["laravel", "pdf", "converter", "docx", "document", "images"],
+    "version": "1.0.3",
+    "description": "Convert DOCX Excel PowerPoint images HTML Markdown to PDF in Laravel. No API, no microservice. Works with Azure Cloud Run Docker.",
+    "keywords": [
+        "laravel",
+        "pdf",
+        "converter",
+        "docx",
+        "document",
+        "images",
+        "weasyprint",
+        "libreoffice",
+        "office",
+        "word",
+        "excel",
+        "powerpoint",
+        "xlsx",
+        "pptx",
+        "markdown",
+        "html-to-pdf",
+        "document-conversion"
+    ],
+    "homepage": "https://github.com/spiderdev27/pdfit",
+    "support": {
+        "issues": "https://github.com/spiderdev27/pdfit/issues",
+        "source": "https://github.com/spiderdev27/pdfit"
+    },
     "license": "MIT",
     "authors": [
         {
